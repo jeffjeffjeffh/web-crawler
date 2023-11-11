@@ -1,6 +1,20 @@
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 
+async function crawlPage(base_url, url, pages) {
+    const response = await fetch(base_url);
+
+    if (response.status >= 400 && response.status) {
+        console.log(response.status);
+        process.exit();
+    }
+    if (!response.headers.get("content-type").startsWith("text/html")) {
+        throw new Error("Received wrong content-type header in response!");
+    }
+
+    console.log(await response.text());
+}
+
 function normalizeURL(str) {
     const url = new URL(str);
     let normalizedURL = "";
@@ -37,4 +51,5 @@ getURLsFromHTML(
 
 module.exports = {
     normalizeURL,
+    crawlPage,
 };
